@@ -8,7 +8,7 @@ const User = require("../Model/User.js")
 router.post("/register", async (req, res, next) => {
     try {
         const resu = await RegistrationSchema.validateAsync(req.body)
-    
+
 
         // if (!resu.email || !resu.password) throw createError.BadRequest()
 
@@ -18,15 +18,16 @@ router.post("/register", async (req, res, next) => {
             throw createError.Conflict(`${resu.identity_number} is already been registered`)
         }
 
-        const user = new User({ full_name: resu.full_name, identity_number:resu.identity_number, role:resu.role, password:resu.password
-         })
+        const user = new User({
+            full_name: resu.full_name, identity_number: resu.identity_number, role: resu.role, password: resu.password
+        })
         const savedUser = await user.save()
-    
+
 
         res.send(savedUser)
 
 
-    } catch (error) {        
+    } catch (error) {
         next(error)
     }
 })
@@ -50,13 +51,13 @@ router.post("/login", async (req, res, next) => {
         const isMatch = user.isValidPassword(resu.password)
         if (!isMatch) throw createError.Unauthorized("Username/Password not valid")
 
-        res.send({
-            message:"login Successfull"
-        })
+
+
+        res.send(user)
 
 
 
-    } catch (error) {        
+    } catch (error) {
         next(error)
     }
 })
