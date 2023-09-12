@@ -6,10 +6,12 @@ const AuthRoute = require("./Route/AuthRoute")
 const Course = require("./Route/Course")
 const Session = require("./Route/Session")
 require("./helpers/init_mongodb")
+const cors = require('cors');
 
 
 
 const app = express()
+app.use(cors());
 app.use(morgan('dev'))
 app.use(express.json())
 app.use(express.urlencoded({ extended: true }))
