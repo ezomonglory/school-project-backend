@@ -61,11 +61,18 @@ router.post("/sign-qrCode", async (req, res, next) => {
 
 
 
+router.get("/get-attendance/:qrCode", async(req, res, next)=> {
+    try {
+        const resu =  req.params
 
-
-
-
-
+        const session = await Session.find({ qrCode: resu.qrCode })
+                
+        const attendance = session[0].attendance
+        res.send(attendance)
+    } catch (error) {
+        next(error)
+    }
+})
 
 
 
