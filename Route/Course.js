@@ -58,7 +58,7 @@ router.post("/add-course", async (req, res, next) => {
         const result = req.body;
 
 
-        if (result.role === "Student") {
+        if (result.role === "student") {
             const studentInfo = {
                 name: result.full_name, // Replace with the actual student name
                 matric_number: result.identity_number,
@@ -115,7 +115,7 @@ router.post("/add-course", async (req, res, next) => {
         }
 
 
-        if (result.role === "Teacher") {
+        if (result.role === "teacher") {
             const studentInfo = {
                 name: result.full_name, // Replace with the actual student name
                 staff_id: result.identity_number,
