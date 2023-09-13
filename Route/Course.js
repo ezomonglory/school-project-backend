@@ -255,7 +255,7 @@ router.post("/add-course", async (req, res, next) => {
                                     course.students.push(studentInfo); // Add the student to the course if not already registered
 
                                     // Add course code and course ID to the user's course array
-                                    updatedUser.courses.push({ code: course.code, id: course._id });
+                                    updatedUser.courses.push({ code: course.course_code, id: course._id });
                                 }
                             });
 
