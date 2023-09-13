@@ -4,7 +4,8 @@ const RegistrationSchema = joi.object({
     full_name: joi.string().required(),
     identity_number:joi.string().required(),
     role:joi.string().required(),
-    password: joi.string().min(2).required()    
+    password: joi.string().min(2).required(),
+    courses:joi.array()
 })
 
 
