@@ -19,7 +19,7 @@ router.post("/register", async (req, res, next) => {
         }
 
         const user = new User({
-            full_name: resu.full_name, identity_number: resu.identity_number, role: resu.role, password: resu.password
+            full_name: resu.full_name, identity_number: resu.identity_number, role: resu.role, password: resu.password, courses:[]
         })
         const savedUser = await user.save()
 

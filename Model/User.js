@@ -23,7 +23,11 @@ const userSchema = new Schema({
 
     password:{
         type:String,
-        require:true
+        required:true
+    },
+    courses:{
+        type:[],
+        required:true
     }
 })
 
