@@ -162,7 +162,7 @@ router.post("/add-course", async (req, res, next) => {
                             // Check if the student is already in the students array of any course
                             courses.forEach((course) => {
                                 const isStudentRegistered = course.students.some((student) => {
-                                    return student.name === studentInfo.name; // Check based on a unique identifier, like name
+                                    return student.matric_number === studentInfo.matric_number; // Check based on a unique identifier, like name
                                 });
 
                                 if (isStudentRegistered) {
@@ -246,7 +246,7 @@ router.post("/add-course", async (req, res, next) => {
                             // Check if the student is already in the students array of any course
                             courses.forEach((course) => {
                                 const isStudentRegistered = course.lecturers.some((student) => {
-                                    return student.name === studentInfo.name; // Check based on a unique identifier, like name
+                                    return student.staff_id === studentInfo.staff_id; // Check based on a unique identifier, like name
                                 });
 
                                 if (isStudentRegistered) {
