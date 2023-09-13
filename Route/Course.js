@@ -261,7 +261,7 @@ router.post("/add-course", async (req, res, next) => {
 
                             if (alreadyRegisteredCourses.length > 0) {
                                 // Handle the case when the student is already registered in some courses
-                                res.status(400).send(`Student is already registered in courses: ${alreadyRegisteredCourses.join(', ')}`);
+                                res.status(400).send(`Teacher is already registered in courses: ${alreadyRegisteredCourses.join(', ')}`);
                             } else {
                                 // Save the updated courses and user
                                 const savePromises = [...courses.map((course) => course.save()), updatedUser.save()];
