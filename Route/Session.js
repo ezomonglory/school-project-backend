@@ -23,7 +23,7 @@ router.post("/generate-qrCode", async (req, res, next) => {
     }
 })
 
-router.get("/session/:id", async (req, res, next)=> {
+router.get("/get-session/:id", async (req, res, next)=> {
     try {
         const {id} = req.params
         const session = Session.find({course_id : id})
