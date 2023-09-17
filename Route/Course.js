@@ -18,7 +18,9 @@ router.post("/create", async (req, res, next) => {
         }
 
         const user = new Course({
-            course_title: resu.course_title, course_code: resu.course_code, lecturers: [],
+            course_title: resu.course_title, course_code: resu.course_code, 
+            credit:resu.course_credit,semester:resu.course_semester,
+            lecturers: [],
             students: []
         })
         const savedUser = await user.save()
