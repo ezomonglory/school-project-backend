@@ -344,6 +344,55 @@ router.delete('/remove-course/:userId/:courseId', (req, res) => {
     });
 });
 
+router.delete('/remove-course/:userId/:courseId', async (req, res) => {
+    const userId = req.params.userId;
+    const courseId = req.params.courseId;
+
+    try {
+        // Find the user by their ID
+        const user = await User.findById(userId);
+
+        if (!user) {
+            // Handle the case when the user is not found
+            res.status(404).send("User not found");
+            return;
+        }
+
+        // Find the course by its ID
+        const course = await Course.findById(courseId);
+
+        if (!course) {
+            // Handle the case when the course is not found
+            res.status(404).send("Course not found");
+            return;
+        }
+
+        // Remove the course from the user's courses array
+        user.courses = user.courses.filter(courseObj => courseObj.id !== courseId);
+
+        if (user.role === "teacher") {
+            // Remove the user from the course's students array
+            course.students = course.teachers.filter(student => student.staff_id !== userId);
+        }
+
+        if (user.role === "student") {
+            // Remove the user from the course's students array
+            course.students = course.students.filter(student => student.matric_number !== userId);
+        }
+
+
+        // Save the updated user and course
+        await Promise.all([user.save(), course.save()]);
+
+        // Send a success response
+        res.status(200).send("Course and user details removed successfully");
+    } catch (err) {
+        // Handle any errors that occur during the process
+        console.error(err);
+        res.status(500).send("Internal Server Error");
+    }
+});
+
 
 
 
