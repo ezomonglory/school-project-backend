@@ -250,99 +250,99 @@ router.post("/add-course", async (req, res, next) => {
 
 
 // Define a route to handle course removal
-router.delete('/remove-course/:userId/:courseId', (req, res) => {
-    const userId = req.params.userId;
-    const courseId = req.params.courseId;
+// router.delete('/remove-course/:userId/:courseId', (req, res) => {
+//     const userId = req.params.userId;
+//     const courseId = req.params.courseId;
 
-    // Find the user by their ID
-    User.findById(userId, (err, user) => {
-        if (err) {
-            // Handle the error if the user is not found
-            console.error(err);
-            res.status(500).send("Internal Server Error");
-            return;
-        }
+//     // Find the user by their ID
+//     User.findById(userId, (err, user) => {
+//         if (err) {
+//             // Handle the error if the user is not found
+//             console.error(err);
+//             res.status(500).send("Internal Server Error");
+//             return;
+//         }
 
-        if (!user) {
-            // Handle the case when the user is not found
-            res.status(404).send("User not found");
-            return;
-        }
+//         if (!user) {
+//             // Handle the case when the user is not found
+//             res.status(404).send("User not found");
+//             return;
+//         }
 
-        if (user.role === "student") {
-            // Find the course by its ID
-            Course.findById(courseId, (err, course) => {
-                if (err) {
-                    // Handle the error if the course is not found
-                    console.error(err);
-                    res.status(500).send("Internal Server Error");
-                    return;
-                }
+//         if (user.role === "student") {
+//             // Find the course by its ID
+//             Course.findById(courseId, (err, course) => {
+//                 if (err) {
+//                     // Handle the error if the course is not found
+//                     console.error(err);
+//                     res.status(500).send("Internal Server Error");
+//                     return;
+//                 }
 
-                if (!course) {
-                    // Handle the case when the course is not found
-                    res.status(404).send("Course not found");
-                    return;
-                }
+//                 if (!course) {
+//                     // Handle the case when the course is not found
+//                     res.status(404).send("Course not found");
+//                     return;
+//                 }
 
-                // Remove the course from the user's courses array
-                user.courses = user.courses.filter(courseObj => courseObj.id !== courseId);
+//                 // Remove the course from the user's courses array
+//                 user.courses = user.courses.filter(courseObj => courseObj.id !== courseId);
 
-                // Remove the user from the course's students array
-                course.students = course.students.filter(student => student.id !== userId);
+//                 // Remove the user from the course's students array
+//                 course.students = course.students.filter(student => student.id !== userId);
 
-                // Save the updated user and course
-                Promise.all([user.save(), course.save()])
-                    .then(() => {
-                        // Send a success response
-                        res.status(200).send("Course and user details removed successfully");
-                    })
-                    .catch((err) => {
-                        // Handle the error if the update fails
-                        console.error(err);
-                        res.status(500).send("Internal Server Error");
-                    });
-            });
+//                 // Save the updated user and course
+//                 Promise.all([user.save(), course.save()])
+//                     .then(() => {
+//                         // Send a success response
+//                         res.status(200).send("Course and user details removed successfully");
+//                     })
+//                     .catch((err) => {
+//                         // Handle the error if the update fails
+//                         console.error(err);
+//                         res.status(500).send("Internal Server Error");
+//                     });
+//             });
 
 
-        }
-        if (user.role === "teacher") {
-            // Find the course by its ID
-            Course.findById(courseId, (err, course) => {
-                if (err) {
-                    // Handle the error if the course is not found
-                    console.error(err);
-                    res.status(500).send("Internal Server Error");
-                    return;
-                }
+//         }
+//         if (user.role === "teacher") {
+//             // Find the course by its ID
+//             Course.findById(courseId, (err, course) => {
+//                 if (err) {
+//                     // Handle the error if the course is not found
+//                     console.error(err);
+//                     res.status(500).send("Internal Server Error");
+//                     return;
+//                 }
 
-                if (!course) {
-                    // Handle the case when the course is not found
-                    res.status(404).send("Course not found");
-                    return;
-                }
+//                 if (!course) {
+//                     // Handle the case when the course is not found
+//                     res.status(404).send("Course not found");
+//                     return;
+//                 }
 
-                // Remove the course from the user's courses array
-                user.courses = user.courses.filter(courseObj => courseObj.id !== courseId);
+//                 // Remove the course from the user's courses array
+//                 user.courses = user.courses.filter(courseObj => courseObj.id !== courseId);
 
-                // Remove the user from the course's students array
-                course.lecturers = course.lecturers.filter(student => student.id !== userId);
+//                 // Remove the user from the course's students array
+//                 course.lecturers = course.lecturers.filter(student => student.id !== userId);
 
-                // Save the updated user and course
-                Promise.all([user.save(), course.save()])
-                    .then(() => {
-                        // Send a success response
-                        res.status(200).send("Course and user details removed successfully");
-                    })
-                    .catch((err) => {
-                        // Handle the error if the update fails
-                        console.error(err);
-                        res.status(500).send("Internal Server Error");
-                    });
-            });
-        }
-    });
-});
+//                 // Save the updated user and course
+//                 Promise.all([user.save(), course.save()])
+//                     .then(() => {
+//                         // Send a success response
+//                         res.status(200).send("Course and user details removed successfully");
+//                     })
+//                     .catch((err) => {
+//                         // Handle the error if the update fails
+//                         console.error(err);
+//                         res.status(500).send("Internal Server Error");
+//                     });
+//             });
+//         }
+//     });
+// });
 
 router.delete('/remove-course/:userId/:courseId', async (req, res) => {
     const userId = req.params.userId;
