@@ -298,6 +298,22 @@ router.post("/add-course", async (req, res, next) => {
 })
 
 
+router.delete("/:course_id", async (req, res, next)=> {
+    try {
+        const {course_id} = req.body
+
+    const result = await Course.deleteOne({_id:course_id})
+      // Check the result
+      if (result.deletedCount === 1) {
+        res.send('Document deleted successfully');
+      } else {
+        res.send('No document matched the filter');
+      }
+    } catch (error) {
+        next(error)
+    }
+})
+
 
 
 
