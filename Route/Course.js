@@ -18,8 +18,8 @@ router.post("/create", async (req, res, next) => {
         }
 
         const user = new Course({
-            course_title: resu.course_title, course_code: resu.course_code, 
-            course_credit:resu.course_credit,course_semester:resu.course_semester,
+            course_title: resu.course_title, course_code: resu.course_code,
+            course_credit: resu.course_credit, course_semester: resu.course_semester,
             lecturers: [],
             students: []
         })
@@ -58,80 +58,14 @@ router.get("/:course_id", async (req, res, next) => {
 
 router.post("/add-course", async (req, res, next) => {
     try {
-        // const result = req.body;
-
-
-        // if (result.role === "student") {
-        //     const studentInfo = {
-        //         name: result.full_name, // Replace with the actual student name
-        //         matric_number: result.identity_number,
-        //     };
-
-        //     const courseIds = result.courses.map((course) => course.id);
-
-        //     // Assuming you have a User model
-        //     User.findOneAndUpdate(
-        //         { _id: result.userId }, // Assuming userId is available in the request
-        //         { $set: studentInfo },
-        //         { new: true }
-        //     )
-        //         .then((updatedUser) => {
-        //             if (!updatedUser) {
-        //                 // Handle the case when the user is not found
-        //                 res.status(404).send("User not found");
-        //                 return;
-        //             }
-
-
-        //             const alreadyRegisteredCourses = [];
-
-        //             // Check if the student is already in the students array of any course
-        //             courses.forEach(async (course) => {
-        //                 const isStudentRegistered = course.students.some((student) => {
-        //                     return student.matric_number === studentInfo.matric_number; // Check based on a unique identifier, like name
-        //                 });
-
-        //                 if (isStudentRegistered) {
-        //                     alreadyRegisteredCourses.push(course.course_code); // Store the course name in which the student is already registered
-        //                 } else {
-        //                     const user = await User.find({ identity_number: result.identity_number })
-
-
-        //                     course.students.push(studentInfo); // Add the student to the course if not already registered
-        //                 }
-        //             });
-
-        //             if (alreadyRegisteredCourses.length > 0) {
-        //                 // Handle the case when the student is already registered in some courses
-        //                 res.status(400).send(`Student is already registered in courses: ${alreadyRegisteredCourses.join(', ')}`);
-        //             } else {
-        //                 // Save the updated courses
-        //                 Promise.all(courses.map((course) => course.save()))
-        //                     .then(() => {
-        //                         // Send a success response
-        //                         res.status(200).send("Courses updated successfully");
-        //                     })
-        //                     .catch((err) => {
-        //                         // Handle the error if the update fails
-        //                         console.error(err);
-        //                         res.status(500).send("Failed to update courses");
-        //                     });
-        //             }
-        //         })
-        //         .catch((err) => {
-        //             // Handle the error
-        //             console.error(err);
-        //             res.status(500).send("Internal Server Error");
-        //         });
-        // }
 
         const result = req.body;
 
         if (result.role === "student") {
             const studentInfo = {
-                        name: result.full_name, // Replace with the actual student name
-                        matric_number: result.identity_number,
-                    };
+                name: result.full_name, // Replace with the actual student name
+                matric_number: result.identity_number,
+            };
 
             const courseIds = result.courses.map((course) => course.id);
 
@@ -298,21 +232,117 @@ router.post("/add-course", async (req, res, next) => {
 })
 
 
-router.delete("/:course_id", async (req, res, next)=> {
-    try {
-        const {course_id} = req.params        
+// router.delete("/:course_id", async (req, res, next)=> {
+//     try {
+//         const {course_id} = req.params        
 
-    const result = await Course.deleteOne({_id:course_id})
-      // Check the result
-      if (result.deletedCount === 1) {
-        res.send('Document deleted successfully');
-      } else {
-        res.send('No document matched the filter');
-      }
-    } catch (error) {
-        next(error)
-    }
-})
+//     const result = await Course.deleteOne({_id:course_id})
+//       // Check the result
+//       if (result.deletedCount === 1) {
+//         res.send('Document deleted successfully');
+//       } else {
+//         res.send('No document matched the filter');
+//       }
+//     } catch (error) {
+//         next(error)
+//     }
+// })
+
+
+// Define a route to handle course removal
+router.delete('/remove-course/:userId/:courseId', (req, res) => {
+    const userId = req.params.userId;
+    const courseId = req.params.courseId;
+
+    // Find the user by their ID
+    User.findById(userId, (err, user) => {
+        if (err) {
+            // Handle the error if the user is not found
+            console.error(err);
+            res.status(500).send("Internal Server Error");
+            return;
+        }
+
+        if (!user) {
+            // Handle the case when the user is not found
+            res.status(404).send("User not found");
+            return;
+        }
+
+        if (user.role === "student") {
+            // Find the course by its ID
+            Course.findById(courseId, (err, course) => {
+                if (err) {
+                    // Handle the error if the course is not found
+                    console.error(err);
+                    res.status(500).send("Internal Server Error");
+                    return;
+                }
+
+                if (!course) {
+                    // Handle the case when the course is not found
+                    res.status(404).send("Course not found");
+                    return;
+                }
+
+                // Remove the course from the user's courses array
+                user.courses = user.courses.filter(courseObj => courseObj.id !== courseId);
+
+                // Remove the user from the course's students array
+                course.students = course.students.filter(student => student.id !== userId);
+
+                // Save the updated user and course
+                Promise.all([user.save(), course.save()])
+                    .then(() => {
+                        // Send a success response
+                        res.status(200).send("Course and user details removed successfully");
+                    })
+                    .catch((err) => {
+                        // Handle the error if the update fails
+                        console.error(err);
+                        res.status(500).send("Internal Server Error");
+                    });
+            });
+
+
+        }
+        if (user.role === "teacher") {
+            // Find the course by its ID
+            Course.findById(courseId, (err, course) => {
+                if (err) {
+                    // Handle the error if the course is not found
+                    console.error(err);
+                    res.status(500).send("Internal Server Error");
+                    return;
+                }
+
+                if (!course) {
+                    // Handle the case when the course is not found
+                    res.status(404).send("Course not found");
+                    return;
+                }
+
+                // Remove the course from the user's courses array
+                user.courses = user.courses.filter(courseObj => courseObj.id !== courseId);
+
+                // Remove the user from the course's students array
+                course.lecturers = course.lecturers.filter(student => student.id !== userId);
+
+                // Save the updated user and course
+                Promise.all([user.save(), course.save()])
+                    .then(() => {
+                        // Send a success response
+                        res.status(200).send("Course and user details removed successfully");
+                    })
+                    .catch((err) => {
+                        // Handle the error if the update fails
+                        console.error(err);
+                        res.status(500).send("Internal Server Error");
+                    });
+            });
+        }
+    });
+});
 
 
 
