@@ -300,7 +300,7 @@ router.post("/add-course", async (req, res, next) => {
 
 router.delete("/:course_id", async (req, res, next)=> {
     try {
-        const {course_id} = req.body
+        const {course_id} = req.params        
 
     const result = await Course.deleteOne({_id:course_id})
       // Check the result
