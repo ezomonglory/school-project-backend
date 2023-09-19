@@ -121,7 +121,7 @@ router.post("/add-course", async (req, res, next) => {
                                 Promise.all(savePromises)
                                     .then(() => {
                                         // Send a success response
-                                        res.status(200).send("User and courses updated successfully");
+                                        res.status(200).send({ "message": "User and courses updated successfully", "user": updatedUser });
                                     })
                                     .catch((err) => {
                                         // Handle the error if the update fails
@@ -205,7 +205,7 @@ router.post("/add-course", async (req, res, next) => {
                                 Promise.all(savePromises)
                                     .then(() => {
                                         // Send a success response
-                                        res.status(200).send("User and courses updated successfully");
+                                        res.status(200).send({ "message": "User and courses updated successfully", "user": updatedUser });
                                     })
                                     .catch((err) => {
                                         // Handle the error if the update fails
@@ -242,7 +242,7 @@ router.delete('/remove-course/:userId/:courseId', async (req, res) => {
 
     try {
         // Find the user by their ID
-        const user = await User.findOne({identity_number : userId});
+        const user = await User.findOne({ identity_number: userId });
 
         console.log(user)
 
@@ -250,48 +250,48 @@ router.delete('/remove-course/:userId/:courseId', async (req, res) => {
             // Handle the case when the user is not found
             res.status(404).send("User not found");
             return;
-        }        
+        }
 
 
         // Find the course by its ID
-        const course = await Course.findOne({course_code:courseId});        
+        const course = await Course.findOne({ course_code: courseId });
 
         if (!course) {
             // Handle the case when the course is not found
             res.status(404).send("Course not found");
             return;
-        }        
+        }
 
-       if(user.courses){
-        console.log("heree")
-        //  Remove the course from the user's courses array
-         user.courses = user.courses.filter(courseObj =>             
-            courseObj.code !==  courseId
-            
-            );                             
-        
-       }
+        if (user.courses) {
+            console.log("heree")
+            //  Remove the course from the user's courses array
+            user.courses = user.courses.filter(courseObj =>
+                courseObj.code !== courseId
+
+            );
+
+        }
 
         if (user.role === "teacher") {
             // Remove the user from the course's students array
             course.lecturers = course.lecturers.filter(student => student.staff_id !== userId);
-        }        
+        }
 
         if (user.role === "student") {
             // Remove the user from the course's students array
             course.students = course.students.filter(student => student.matric_number !== userId);
         }
-                
+
         // Save the updated user and course        
-        
-        if(user && course){
+
+        if (user && course) {
             console.log("gotten here")
             await Promise.all([course.save(), user.save()]);
         }
 
 
         // Send a success response
-        res.status(200).send({"message":"Course and user details removed successfully", "user": user, "course": course});
+        res.status(200).send({ "message": "Course and user details removed successfully", "user": user, "course": course });
     } catch (err) {
         // Handle any errors that occur during the process
         console.error(err);
