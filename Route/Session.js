@@ -27,7 +27,7 @@ router.get("/get-session/:id", async (req, res, next)=> {
     try {
         const {id} = req.params      
         console.log(id)  
-        const session = await Session.find({course_code: id})
+        const session = await Session.find({course_id : id})
         if(session){
             res.send(session)
         }
