@@ -94,6 +94,7 @@ router.post("/add-course", async (req, res, next) => {
                             }
 
                             const alreadyRegisteredCourses = [];
+                            const newCourse = []
 
                             // Check if the student is already in the students array of any course
                             courses.forEach((course) => {
@@ -102,33 +103,32 @@ router.post("/add-course", async (req, res, next) => {
                                 });
 
                                 if (isStudentRegistered) {
-                                    alreadyRegisteredCourses.push(course.name); // Store the course name in which the student is already registered
+
+                                    // Add course code and course ID to the user's course array
+                                    newCourse.push({ code: course.code, id: course._id });
                                 } else {
                                     course.students.push(studentInfo); // Add the student to the course if not already registered
 
                                     // Add course code and course ID to the user's course array
-                                    updatedUser.courses.push({ code: course.code, id: course._id });
+                                    newCourse.push({ code: course.code, id: course._id });
                                 }
                             });
 
-                            if (alreadyRegisteredCourses.length > 0) {
-                                // Handle the case when the student is already registered in some courses
-                                res.status(400).send(`Student is already registered in courses: ${alreadyRegisteredCourses.join(', ')}`);
-                            } else {
-                                // Save the updated courses and user
-                                const savePromises = [...courses.map((course) => course.save()), updatedUser.save()];
+                            updatedUser.courses = newCourse
+                            // Save the updated courses and user
+                            const savePromises = [...courses.map((course) => course.save()), updatedUser.save()];
 
-                                Promise.all(savePromises)
-                                    .then(() => {
-                                        // Send a success response
-                                        res.status(200).send({ "message": "User and courses updated successfully", "user": updatedUser });
-                                    })
-                                    .catch((err) => {
-                                        // Handle the error if the update fails
-                                        console.error(err);
-                                        res.status(500).send("Failed to update courses");
-                                    });
-                            }
+                            Promise.all(savePromises)
+                                .then(() => {
+                                    // Send a success response
+                                    res.status(200).send({ "message": "User and courses updated successfully", "user": updatedUser });
+                                })
+                                .catch((err) => {
+                                    // Handle the error if the update fails
+                                    console.error(err);
+                                    res.status(500).send("Failed to update courses");
+                                });
+
                         })
                         .catch((err) => {
                             // Handle the error
@@ -178,6 +178,7 @@ router.post("/add-course", async (req, res, next) => {
                             }
 
                             const alreadyRegisteredCourses = [];
+                            const newCourse = []
 
                             // Check if the student is already in the students array of any course
                             courses.forEach((course) => {
@@ -186,33 +187,32 @@ router.post("/add-course", async (req, res, next) => {
                                 });
 
                                 if (isStudentRegistered) {
-                                    alreadyRegisteredCourses.push(course.name); // Store the course name in which the student is already registered
+                                    // Add course code and course ID to the user's course array
+                                    newCourse.push({ code: course.course_code, id: course._id });
+                                    console.log("registered")
                                 } else {
                                     course.lecturers.push(studentInfo); // Add the student to the course if not already registered
 
                                     // Add course code and course ID to the user's course array
-                                    updatedUser.courses.push({ code: course.course_code, id: course._id });
+                                    newCourse.push({ code: course.course_code, id: course._id });
                                 }
                             });
 
-                            if (alreadyRegisteredCourses.length > 0) {
-                                // Handle the case when the student is already registered in some courses
-                                res.status(400).send(`Teacher is already registered in courses: ${alreadyRegisteredCourses.join(', ')}`);
-                            } else {
-                                // Save the updated courses and user
-                                const savePromises = [...courses.map((course) => course.save()), updatedUser.save()];
+                            updatedUser.courses = newCourse
+                            // Save the updated courses and user
+                            const savePromises = [...courses.map((course) => course.save()), updatedUser.save()];
 
-                                Promise.all(savePromises)
-                                    .then(() => {
-                                        // Send a success response
-                                        res.status(200).send({ "message": "User and courses updated successfully", "user": updatedUser });
-                                    })
-                                    .catch((err) => {
-                                        // Handle the error if the update fails
-                                        console.error(err);
-                                        res.status(500).send("Failed to update courses");
-                                    });
-                            }
+                            Promise.all(savePromises)
+                                .then(() => {
+                                    // Send a success response
+                                    res.status(200).send({ "message": "User and courses updated successfully", "user": updatedUser });
+                                })
+                                .catch((err) => {
+                                    // Handle the error if the update fails
+                                    console.error(err);
+                                    res.status(500).send("Failed to update courses");
+                                });
+
                         })
                         .catch((err) => {
                             // Handle the error
