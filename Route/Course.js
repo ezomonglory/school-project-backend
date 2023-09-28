@@ -105,16 +105,21 @@ router.post("/add-course", async (req, res, next) => {
                                 if (isStudentRegistered) {
 
                                     // Add course code and course ID to the user's course array
-                                    newCourse.push({ code:course.course_code, id: course._id });
+                                    newCourse.push({ code: course.course_code, id: course._id });
                                 } else {
                                     course.students.push(studentInfo); // Add the student to the course if not already registered
 
                                     // Add course code and course ID to the user's course array
-                                    newCourse.push({ code:course.course_code, id: course._id });
+                                    newCourse.push({ code: course.course_code, id: course._id });
+
+                                    updatedUser.courses.push(
+                                        {
+                                            code: course.course_code, id: course._id
+                                        })
                                 }
                             });
 
-                            updatedUser.courses = newCourse
+
                             // Save the updated courses and user
                             const savePromises = [...courses.map((course) => course.save()), updatedUser.save()];
 
