@@ -23,12 +23,12 @@ router.post("/generate-qrCode", async (req, res, next) => {
     }
 })
 
-router.get("/get-session/:id", async (req, res, next)=> {
+router.get("/get-session/:id", async (req, res, next) => {
     try {
-        const {id} = req.params      
-        console.log(id)  
-        const session = await Session.find({course_id : id})
-        if(session){
+        const { id } = req.params
+        console.log(id)
+        const session = await Session.find({ course_id: id })
+        if (session) {
             res.send(session)
         }
     } catch (error) {
@@ -50,12 +50,13 @@ router.post("/scan-qrCode", async (req, res, next) => {
 
 
 
+
 router.post("/sign-qrCode", async (req, res, next) => {
     try {
         const resu = await req.body
 
         const session = await Session.find({ qrCode: resu.qrCode })
-        
+
 
 
         session[0].attendance.push({
@@ -73,14 +74,43 @@ router.post("/sign-qrCode", async (req, res, next) => {
 
 
 
-router.get("/get-attendance/:qrCode", async(req, res, next)=> {
+router.get("/get-attendance/:qrCode", async (req, res, next) => {
     try {
-        const resu =  req.params
+        const resu = req.params
 
         const session = await Session.find({ qrCode: resu.qrCode })
-                
+
         const attendance = session[0].attendance
         res.send(attendance)
+    } catch (error) {
+        next(error)
+    }
+})
+
+router.post("/percentage/", async (req, res, next) => {
+
+    try {
+        const result = req.body
+        const session = await Session.find({ course_code: result.course_code })
+        const studentAttendance = []
+        const targetObject = {
+            name: result.name,
+            matric_number: result.matric_number
+        }
+
+        session.forEach((session) => {
+            const itIncludes = session.attendance.find(object => object.name === targetObject.name)
+
+            if (itIncludes) {
+                studentAttendance.push(session)
+            }
+
+        })
+
+        const percentage = (studentAttendance.length / session.length)*100
+
+        res.send({"percentage":Math.round(percentage)})
+
     } catch (error) {
         next(error)
     }
